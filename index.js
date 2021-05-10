@@ -5,6 +5,8 @@ const cors = require("cors");
 
 //routers
 const authRoutes = require("./routers/authRouter");
+const postRoutes = require("./routers/postRouter");
+const userRoutes = require("./routers/userRouter");
 
 //use dot env to use .env files
 dotenv.config();
@@ -17,6 +19,8 @@ app.use(express.json());
 
 //app routes
 app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/users", userRoutes);
 
 //connect to the mongodb
 mongoose
@@ -24,6 +28,7 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   })
   .then(() => {
     console.log("connected to MongoDB");
