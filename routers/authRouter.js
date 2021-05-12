@@ -29,7 +29,7 @@ router.post("/register", async (req, res) => {
 
     //save new user and respond
     await newUser.save();
-    res.status(201).send("new user created");
+    res.status(201).json(newUser._id);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -48,7 +48,7 @@ router.post("/login", async (req, res) => {
 
     //compare the password to the hashed password
     if (validPass) {
-      res.status(200).json(user);
+      res.status(200).json(user._id);
     } else {
       res.status(500).send("Incorrect Credentials");
     }
