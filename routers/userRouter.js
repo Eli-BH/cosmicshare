@@ -68,8 +68,16 @@ router.put("/:id/follow", async (req, res) => {
     const currentUser = await User.findById(req.body.userId);
 
     if (!user.followers.includes(req.body.userId)) {
-      await user.updateOne({ $push: { followers: req.body.userId } });
-      await currentUserUser.updateOne({ $push: { following: req.params.id } });
+      await user.updateOne({
+        $push: {
+          followers: currentUser._id,
+        },
+      });
+      await currentUser.updateOne({
+        $push: {
+          following: user._id,
+        },
+      });
       res.status(200).json({ message: "User Followed" });
     }
   } catch (error) {
@@ -87,8 +95,8 @@ router.put("/:id/unfollow", async (req, res) => {
     const currentUser = await User.findById(req.body.userId);
 
     if (user.followers.includes(req.body.userId)) {
-      await user.updateOne({ $pull: { followers: req.body.userId } });
-      await currentUser.updateOne({ $pull: { following: req.params.id } });
+      await user.updateOne({ $pull: { followers: currentUser._id } });
+      await currentUser.updateOne({ $pull: { following: user._id } });
       res.status(200).send("No longer following this user");
     } else {
       return res.status(401).json({ message: "Not following this usr" });
@@ -99,7 +107,7 @@ router.put("/:id/unfollow", async (req, res) => {
 });
 
 //get Followings
-router.get("/:userId/friends", async (req, res) => {
+router.get("/follows/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     const friends = await Promise.all(
@@ -114,6 +122,35 @@ router.get("/:userId/friends", async (req, res) => {
       friendsList.push({ _id, username, profilePicture });
     });
     res.status(200).json(friendsList);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//search for user
+router.get("/search", async (req, res) => {
+  const username = req.query.username;
+
+  try {
+    const user = await User.findOne({ username: username });
+    if (!user) return res.status(404).send("Username not found");
+
+    const { password, updatedAt, ...info } = user._doc;
+
+    res.status(200).json(info);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//get all users
+router.get("/all", async (req, res) => {
+  try {
+    const users = await User.find({});
+
+    if (!users) return res.status(404).send("No Users");
+
+    res.status(200).json({ users });
   } catch (error) {
     res.status(500).json(error);
   }

@@ -28,7 +28,6 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-    useFindAndModify: false,
   })
   .then(() => {
     console.log("connected to MongoDB");
