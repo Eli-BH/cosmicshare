@@ -135,13 +135,13 @@ router.put("/:id/like", async (req, res) => {
 });
 
 //get all liked posts
-router.get("/liked", async (req, res) => {
+router.get("/liked/:id", async (req, res) => {
   try {
     const posts = await Post.find({});
     if (!posts) return res.status(404).json({ message: "Post not found" });
 
     const likedPosts = posts.filter((post) =>
-      post.likes.includes(req.body.userId)
+      post.likes.includes(req.params.id)
     );
 
     if (!likedPosts)

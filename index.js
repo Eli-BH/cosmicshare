@@ -7,6 +7,8 @@ const cors = require("cors");
 const authRoutes = require("./routers/authRouter");
 const postRoutes = require("./routers/postRouter");
 const userRoutes = require("./routers/userRouter");
+const messageRoutes = require("./routers/messageRouter");
+const conversationRoutes = require("./routers/conversationRouter");
 
 //use dot env to use .env files
 dotenv.config();
@@ -21,6 +23,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/conversations", conversationRoutes);
+app.use("/api/messages", messageRoutes);
 
 //connect to the mongodb
 mongoose

@@ -133,7 +133,7 @@ router.get("/search", async (req, res) => {
 
   try {
     const user = await User.findOne({ username: username });
-    if (!user) return res.status(404).send("Username not found");
+    if (!user) return res.status(404).send("User not found");
 
     const { password, updatedAt, ...info } = user._doc;
 
@@ -147,10 +147,15 @@ router.get("/search", async (req, res) => {
 router.get("/all", async (req, res) => {
   try {
     const users = await User.find({});
-
+    let usersArr = [];
     if (!users) return res.status(404).send("No Users");
 
-    res.status(200).json({ users });
+    users.map((user) => {
+      const { _id, username, profilePicture } = user;
+      usersArr.push({ _id, username, profilePicture });
+    });
+
+    res.status(200).json(usersArr);
   } catch (error) {
     res.status(500).json(error);
   }
