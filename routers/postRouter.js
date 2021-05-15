@@ -36,11 +36,11 @@ router.put("/:id", async (req, res) => {
 });
 
 //delete a post by id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id/:userId", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    if (post.userId === req.body.userId) {
+    if (post.userId === req.params.userId) {
       await post.deleteOne();
       res.status(200).json({ message: "post deleted" });
     } else {
@@ -79,6 +79,7 @@ router.post("/picture", async (req, res) => {
       const newPost = await new Post({
         userId: req.body.userId,
         img: req.file.location,
+        text: req.body.text,
       });
 
       const savedPost = await newPost.save();

@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const upload = require("../services/ImageUpload");
+const singleUpload = upload.single("image");
 
 //get user
 router.get("/", async (req, res) => {
@@ -41,6 +43,55 @@ router.put("/:id", async (req, res) => {
     }
   } else {
     return res.status(403).json("Unauthorized");
+  }
+});
+
+//update if image
+router.post("/picture/:id", async (req, res) => {
+  try {
+    singleUpload(req, res, async (err) => {
+      if (err) {
+        return res.json({
+          success: false,
+          errors: {
+            title: "Image Upload Error",
+            detail: err.message,
+            error: err,
+          },
+        });
+      }
+
+      await User.findByIdAndUpdate(req.params.id, {
+        $set: { profilePicture: req.file.location },
+      });
+      res.status(200).json({ message: "Updated" });
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+//update if image
+router.post("/cover/:id", async (req, res) => {
+  try {
+    singleUpload(req, res, async (err) => {
+      if (err) {
+        return res.json({
+          success: false,
+          errors: {
+            title: "Image Upload Error",
+            detail: err.message,
+            error: err,
+          },
+        });
+      }
+
+      await User.findByIdAndUpdate(req.params.id, {
+        $set: { coverPicture: req.file.location },
+      });
+      res.status(200).json({ message: "Updated" });
+    });
+  } catch (error) {
+    res.status(500).json(error);
   }
 });
 
